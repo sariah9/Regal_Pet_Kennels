@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+ <style>
+/******Base Styles*****/
+body {
+  font-family: 'Rasa', serif;
+  font-size: 24px;
+  color: #000000;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+#title {
+  width: 100%;
+  height: 100px;
+  margin: auto;
+  border-style: solid none solid solid;
+  border-color: #c3acfc;
+  position: relative;
+  text-align: center;
+}
+
+h1 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform: translate(-0%, -50%);
+  text-align: center;
+  font-family: 'Yellowtail', serif;
+  font-weight: 400;
+  font-size: 80px;
+  color: #000000;
+  padding: 40px;
+  margin: 40px;
+}
+
+.logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+    border-radius: 8px;
+}
+
+.jwt_display{
+  width: 100%;
+  height: auto;
+  background-color: black;
+  overflow-x: scroll; /* Hide horizontal scrollbar */
+  overflow-y: hidden;
+    border-style: solid;
+  border-color: #c3acfc;
+    padding: 15px;
+}
+
+h3 {
+  font-family: 'Rasa', serif;
+  font-size: 38px;
+  color: #ffffff;
+}
+
+h3 span{
+  color: red;
+}
+
+.avatar{
+    width: 15%;
+    height: auto;
+    border-radius: 12px;
+}
+
+a:link, a:visited {
+  position: center;
+  top: 0px;
+  left: 0px;
+  transform: translate(50%, 50%);
+  width: 33%;
+  font-family: 'Merienda', serif;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: 2px solid #c3acfc;
+  padding: 15px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: #d152eb;
+  color: white;
+}
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Merienda&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rasa:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+    <title>Sariah's Final Project</title>
+</head>
+<body>
+    <div id="title">
+        <h1>Welcome {{userinfo['name']}}</h1>
+    </div>
+    <img class="logo" src="../static/banner.png" />
+    <div class="jwt_display">
+        <h3><span>JWT Token: </span>{{jwt_token}}</h3>
+    </div>
+    <div class="logged-in-box auth0-box logged-in w3-container">
+        <img class="avatar" src="{{userinfo['picture']}}"/>
+        <pre>Profile Data: {{userinfo_pretty}}</pre>
+        <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+    </div>
+</body>
+</html>

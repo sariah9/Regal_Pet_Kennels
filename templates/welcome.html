@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+ <style>
+/******Base Styles*****/
+body {
+  font-family: 'Rasa', serif;
+  font-size: 24px;
+  color: #000000;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+#title {
+  width: 100%;
+  height: 100px;
+  margin: auto;
+  border-style: solid none solid solid;
+  border-color: #c3acfc;
+  position: relative;
+  text-align: center;
+}
+
+h1 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform: translate(-0%, -50%);
+  text-align: center;
+  font-family: 'Yellowtail', serif;
+  font-weight: 400;
+  font-size: 80px;
+  color: #000000;
+  padding: 40px;
+  margin: 40px;
+}
+
+.logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+    border-radius: 8px;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+    border-radius: 8px;
+}
+
+h2 {
+  font-family: 'Vidaloka', serif;
+  font-size: 48px;
+  color: #000000;
+}
+
+h3 {
+  font-family: 'Vidaloka', serif;
+  font-size: 35px;
+  text-align: center;
+  color: #000000;
+}
+
+p {
+  font-family: 'Amita', serif;
+  font-size: 30px;
+  text-align: center;
+  color: #000000;
+}
+
+a:link, a:visited {
+  position: center;
+  top: 0px;
+  left: 0px;
+  transform: translate(50%, 50%);
+  width: 33%;
+  font-family: 'Merienda', serif;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: 2px solid #c3acfc;
+  padding: 15px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: #d152eb;
+  color: white;
+}
+
+ul li {
+  list-style: none;
+}
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amita&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merienda&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rasa:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vidaloka&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+    <title>Sariah's Final Project</title>
+</head>
+<body>
+    <div id="title">
+        <h1>Welcome to Regal Pet Kennels</h1>
+    </div>
+    <img class="logo" src="../static/regal.png" />
+    <h2>Please log in with the button below</h2>
+    <h3>You can either register as a user to access /pets operations</h3>
+    <p>Or you can navigate to /kennels or /users endpoints</p>
+
+    <a href="/ui_login">Log in to Auth0</a>
+
+</body>
+</html>

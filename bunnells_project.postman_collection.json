@@ -1,0 +1,3599 @@
+{
+	"info": {
+		"_postman_id": "791f1e29-68c8-42aa-b996-469b506a77f1",
+		"name": "hw9_final",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "check users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//manually check content: [{\"id\": \"auth0|60b9194c7f82d100681893fb\", \"name\": \"Sariah\"}, \r",
+							"//{\"name\": \"Peter Husom\", \"id\": \"auth0|60b939cb612d820070a4547d\"}]"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users 405 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 Method not allowed\", function () {\r",
+							"    pm.response.to.have.status(405);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"405 error message\", function () {\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request verb is not supported on this URL\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users 406 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 Not Acceptable\", function () {\r",
+							"    pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"406 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The response content type is not supported by this API\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 400 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"400 error message\", function () {\r",
+							"   pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request object is missing at least one of the required attributes\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"large\",\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 201 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"kennel_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"large\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"large\",\r\n  \"inside\": true,\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel 200 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"large\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "valid patch kennel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"large\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(false);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(false);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"inside\": false,\r\n   \"public\": false\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "valid put kennel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"medium\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"size\": \"medium\",\r\n   \"inside\": true,\r\n   \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"k2_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"medium\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(false);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"k2_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"medium\",\r\n  \"inside\": false,\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel 405 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 Method not allowed\", function () {\r",
+							"    pm.response.to.have.status(405);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"405 error message\", function () {\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request verb is not supported on this URL\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"medium\",\r\n  \"inside\": false,\r\n  \"public\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"k3_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"small\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(false);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"k3_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"small\",\r\n  \"inside\": true,\r\n  \"public\": false\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel 406 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 Not Acceptable\", function () {\r",
+							"    pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"406 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The response content type is not supported by this API\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k3_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k3_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"k4_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"large\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(false);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"k4_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"large\",\r\n  \"inside\": false,\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"k5_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"medium\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(false);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"k5_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"medium\",\r\n  \"inside\": false,\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pagination before next",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"next url does not exist\", function () {\r",
+							"    pm.expect(pm.response.json()[\"next\"]).to.not.exist;\r",
+							"    pm.expect(pm.response.json()[\"total\"]).to.eq(5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kennel 6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"k6_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"medium\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"k6_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.not.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"size\": \"medium\",\r\n  \"inside\": true,\r\n  \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pagination with next",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json()[\"kennels\"];\r",
+							"pm.test(\"correct number of kennels in response\", function () {\r",
+							"    pm.expect(jsonData.length).to.eq(5);\r",
+							"    pm.expect(pm.response.json()[\"total\"]).to.eq(6);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"next property exists\", function () {\r",
+							"    //Check if next property exists\r",
+							"    pm.expect(pm.response.json()[\"next\"]).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 1 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"pet_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Peaches\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Cat\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(12);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"pet_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.eq(null);\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Peaches\", \r\n   \"type\": \"Cat\", \r\n   \"weight\": 12 \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 2 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p2_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Bijou\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Dog\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(16);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p2_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Bijou\", \r\n   \"type\": \"Dog\", \r\n   \"weight\": 16 \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 3 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p3_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Poppy\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Bird\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(4);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p3_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Poppy\", \r\n   \"type\": \"Bird\", \r\n   \"weight\": 4 \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 4 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p4_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Aspen\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Dog\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(48);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p4_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Aspen\", \r\n   \"type\": \"Dog\", \r\n   \"weight\": 48\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 5 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p5_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Waffles\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Rabbit\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(8);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p5_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Waffles\", \r\n   \"type\": \"Rabbit\", \r\n   \"weight\": 8\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check pet pagination before next",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"next url does not exist\", function () {\r",
+							"    pm.expect(pm.response.json()[\"next\"]).to.not.exist;\r",
+							"    pm.expect(pm.response.json()[\"total\"]).to.eq(5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 6 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p6_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Onyx\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Dog\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(86);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p6_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Onyx\", \r\n   \"type\": \"Dog\", \r\n   \"weight\": 86\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check pet pagination with next",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json()[\"pets\"];\r",
+							"pm.test(\"only correct number of pets in response\", function () {\r",
+							"    pm.expect(jsonData.length).to.eq(5);\r",
+							"    pm.expect(pm.response.json()[\"total\"]).to.eq(6);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"next property exists\", function () {\r",
+							"    //Check if next property exists\r",
+							"    pm.expect(pm.response.json()[\"next\"]).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pet invalid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Vivi\", \r\n   \"type\": \"Cat\", \r\n   \"weight\": 8 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pet missing JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Vivi\", \r\n   \"type\": \"Cat\", \r\n   \"weight\": 8 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid patch pet 1 owner 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Moxie\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch pet 1 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Moxie\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Cat\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(12);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"pet_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Moxie\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid put pet 2 owner 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Harlow\", \r\n   \"type\": \"Rabbit\", \r\n   \"weight\": 9 \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put pet 2 owner 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Harlow\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Rabbit\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(9);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p2_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Harlow\", \r\n   \"type\": \"Rabbit\", \r\n   \"weight\": 9 \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid view owner 1 pet 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p3_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p3_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 7 owner 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p7_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Momo\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Rabbit\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(6);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p7_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id2\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Momo\", \r\n   \"type\": \"Rabbit\", \r\n   \"weight\": 6\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create pet 8 owner 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"p8_id\", pm.response.json()[\"id\"]);\r",
+							"\r",
+							"pm.test(\"201 status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Truffle\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Rabbit\");\r",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(5);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/pets/\" + pm.environment.get(\"p8_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.not.exist;\r",
+							"    //check owner\r",
+							"    pm.expect(pm.response.json()[\"owner\"]).to.eq(pm.environment.get(\"user_id2\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Truffle\", \r\n   \"type\": \"Rabbit\", \r\n   \"weight\": 5\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check owner 2 pets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//manually check pet 7 {\"name\": \"Momo\", \"type\": \"Rabbit\", \"weight\": 6}\r",
+							"//manually check pet 8 {\"name\": \"Truffle\", \"type\": \"Rabbit\", \"weight\": 5}\r",
+							"pm.test(\"correct number of pets in response\", function () {\r",
+							"    pm.expect(pm.response.json()[\"total\"]).to.eq(8);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pet 1 to kennel 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}",
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pet 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"][0]).to.eq(pm.environment.get(\"pet_id\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check pet 1 kennel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.eq(pm.environment.get(\"kennel_id\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid add pet 1 to kennel 2 403 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"403 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"This pet is already assigned to another kennel\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k2_id}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k2_id}}",
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch pet in kennel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"medium\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(false);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(false);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"][0]).to.eq(pm.environment.get(\"pet_id\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"inside\": false,\r\n   \"public\": false\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pet ids after put",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"   //Check if the response content is valid and matches the expected values\r",
+							"   //Check if the self url is correct\r",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(\"large\");\r",
+							"    pm.expect(pm.response.json()[\"inside\"]).to.eq(true);\r",
+							"    pm.expect(pm.response.json()[\"public\"]).to.eq(true);\r",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/kennels/\" + pm.environment.get(\"kennel_id\");\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"][0]).to.eq(pm.environment.get(\"pet_id\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"size\": \"large\",\r\n   \"inside\": true,\r\n   \"public\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid remove pet from kennel 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"404 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"This pet is not in this kennel\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}",
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove pet 1 from kennel",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}",
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pets empty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"pets\"]).to.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check pet 1 kennel equals null",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check pets\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.eq(null);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pet  2 to kennel 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}",
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pet 7 to kennel 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}/pets/{{p7_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}",
+						"pets",
+						"{{p7_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check pets 2 and 7\r",
+							"    pm.expect(pm.response.json()[\"pets\"][0]).to.eq(pm.environment.get(\"p2_id\"));\r",
+							"    pm.expect(pm.response.json()[\"pets\"][1]).to.eq(pm.environment.get(\"p7_id\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 7",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p7_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p7_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check kennel pet 7 is gone",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //manually check pets 2 and 7\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 1 204 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{kennel_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{kennel_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check pet 2 kennel is null",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    //check kennel\r",
+							"    pm.expect(pm.response.json()[\"kennel\"]).to.eq(null);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid delete pet 8 401 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p8_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p8_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 8",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p8_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p8_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p6_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p6_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p5_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p5_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid delete pet 4 401 status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"401 error message\", function () {\r",
+							"    //Check for error message\r",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Incorrect authentication credentials\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p4_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p4_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p4_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p4_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p3_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p3_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{p2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{p2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/pets/{{pet_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"pets",
+						"{{pet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k3_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k3_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k4_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k4_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k5_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k5_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kennel 6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/kennels/{{k6_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"kennels",
+						"{{k6_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
